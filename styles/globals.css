@@ -1,13 +1,21 @@
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
+    Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-* {
-  box-sizing: border-box;
+html {
+  font-size: 14px;
+}
+
+h4 {
+  margin: 0;
 }
 
 a {
@@ -16,13 +24,12 @@ a {
 
 p {
   line-height: 1.5;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
-@media (max-width: 600px) {
-  p {
-    font-size: 1.25rem;
-  }
+footer {
+  font-size: 0.875rem;
 }
 
 hr {
@@ -32,7 +39,22 @@ hr {
   width: 120px;
 }
 
+/* addendum to default tippy styles */
 .tippy-content {
-  max-height: 200px;
+  max-height: 170px;
   overflow: auto;
+}
+
+@media (min-width: 600px) {
+  html {
+    font-size: 16px;
+  }
+
+  p {
+    font-size: 1.5rem;
+  }
+
+  footer {
+    font-size: 1rem;
+  }
 }
