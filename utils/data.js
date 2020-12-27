@@ -18,3 +18,5 @@ export const nits = [
   ["mute point", "moot point"],
   ["dually noted", "duly noted"],
 ];
+
+export const emojis = ["😉", "🙃", "🙂", "😇", "😜", "🤓", "🧑‍🏫", "🙊"];

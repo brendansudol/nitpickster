@@ -1,47 +1,80 @@
+import sample from "lodash.sample";
+import shuffle from "lodash.shuffle";
 import Twitter from "twitter-lite";
-import { nits } from "../../utils/nits";
+import { emojis, nits } from "../../utils/data";
 
-const terms = nits.map((nit) => `"${nit[0]}"`).join(" OR ");
-const query = `${terms} -filter:retweets -filter:replies`;
+const NITPICKS_TO_SEARCH_FOR = 3;
 
 export default async (req, res) => {
-  const client = new Twitter({
-    consumer_key: process.env.TWITTER_API_KEY,
-    consumer_secret: process.env.TWITTER_API_SECRET,
-    access_token_key: process.env.TWITTER_ACCESS_TOKEN,
-    access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-  });
+  try {
+    const client = new Twitter({
+      consumer_key: process.env.TWITTER_API_KEY,
+      consumer_secret: process.env.TWITTER_API_SECRET,
+      access_token_key: process.env.TWITTER_ACCESS_TOKEN,
+      access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+    });
 
-  // const data = await client.get("search/tweets", {
-  //   q: query,
-  //   count: 25,
-  //   result_type: "recent",
-  // });
+    // search for a random subset of nits on each run
+    const nitsFiltered = shuffle(nits).slice(0, NITPICKS_TO_SEARCH_FOR);
+    const terms = nitsFiltered.map((nit) => `"${nit[0]}"`).join(" OR ");
+    const query = `${terms} -filter:retweets -filter:replies`;
 
-  // const results = data?.statuses ?? [];
-  // const firstResult = results[0];
+    const data = await client.get("search/tweets", {
+      q: query,
+      count: 25,
+      result_type: "recent",
+    });
 
-  // if (!firstResult) return;
+    // use first (most recent) result
+    const result = (data?.statuses ?? [])[0];
 
-  // const {
-  //   id_str: id,
-  //   text,
-  //   user: { screen_name: handle },
-  // } = firstResult;
+    if (!result) {
+      return res.status(200).json({
+        query,
+        origTweet: undefined,
+        status: "NO_RESULTS",
+      });
+    }
 
-  // const nitMatch = nits.find((nit) => {
-  //   const re = new RegExp(nit[0], "i");
-  //   return re.test(text);
-  // });
+    const {
+      id_str,
+      text,
+      user: { screen_name: handle },
+    } = result;
 
-  // if (!nitMatch) return;
+    const nitMatch = nitsFiltered.find((nit) => {
+      const re = new RegExp(nit[0], "i");
+      return re.test(text);
+    });
 
-  // const tweet = await client.post("statuses/update", {
-  //   status: `@${handle} Hi! I think you mean, '${nitMatch[1]}' 😊`,
-  //   in_reply_to_status_id: id,
-  //   auto_populate_reply_metadata: true,
-  // });
+    if (!nitMatch) {
+      return res.status(200).json({
+        query,
+        origTweet: text,
+        status: "NO_NIT",
+      });
+    }
 
-  res.statusCode = 200;
-  res.json({ tweet: "TODO" });
+    // compose reply tweet
+    const actual = nitMatch[1];
+    const emoji = sample(emojis);
+    const reply = `@${handle} Hi! I think you mean, '${actual}' ${emoji}`;
+
+    await client.post("statuses/update", {
+      status: reply,
+      in_reply_to_status_id: id_str,
+      auto_populate_reply_metadata: true,
+    });
+
+    return res.status(200).json({
+      query,
+      origTweet: text,
+      status: "SUCCESS",
+    });
+  } catch (e) {
+    return res.status(500).json({
+      error: e.message ?? e.toString() ?? "N/A",
+      status: "ERROR",
+    });
+  }
 };

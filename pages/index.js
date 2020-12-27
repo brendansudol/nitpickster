@@ -1,7 +1,7 @@
 import Tippy from "@tippyjs/react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import { nits } from "../utils/nits";
+import { nits } from "../utils/data";
 
 function Home() {
   return (
