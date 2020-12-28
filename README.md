@@ -14,8 +14,9 @@ TODO
 - [x] Better styling for nitpick list tooltip
 - [x] Update old nitpickster repo
 - [x] Delete old nitpickster website
-- [ ] Add to projects page
+- [x] Add to projects page
 
-LATER
+MAYBE LATER
 
 - [ ] Parameterize endpoint to target specific nit?
+- [ ] Put API endpoint behind JWT auth?
