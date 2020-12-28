@@ -9,10 +9,10 @@ make silly spelling and homophone mistakes.
 
 TODO
 
-- [ ] Update twitter images and bio
-- [ ] Set up GitHub action for daily run
+- [x] Update twitter images and bio
+- [x] Set up GitHub action for daily run
 - [x] Better styling for nitpick list tooltip
-- [ ] Update old nitpickster repo
+- [x] Update old nitpickster repo
 - [x] Delete old nitpickster website
 - [ ] Add to projects page
 

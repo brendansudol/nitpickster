@@ -1,0 +1,13 @@
+name: nitpickster-daily-cron
+on:
+  schedule:
+    - cron: "0 15 * * *"
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call API route to send new tweet
+        run: |
+          curl --request GET \
+          --url 'https://nitpickster.vercel.app/api' \
+          --header 'Authorization: Bearer ${{ secrets.NITPICKSTER_KEY }}'
