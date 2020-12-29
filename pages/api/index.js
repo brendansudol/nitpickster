@@ -23,6 +23,7 @@ export default async (req, res) => {
       q: query,
       count: 25,
       result_type: "recent",
+      tweet_mode: "extended",
     });
 
     // use first (most recent) result
@@ -31,27 +32,28 @@ export default async (req, res) => {
     if (!result) {
       return res.status(200).json({
         query,
-        origTweet: undefined,
+        origTweet: null,
         status: "NO_RESULTS",
       });
     }
 
     const {
       id_str,
-      text,
+      full_text: origTweet,
       user: { screen_name: handle },
     } = result;
 
+    // find the offending phrase (since we search for multiple nits at a time)
     const nitMatch = nitsFiltered.find((nit) => {
       const re = new RegExp(nit[0], "i");
-      return re.test(text);
+      return re.test(origTweet);
     });
 
     if (!nitMatch) {
       return res.status(200).json({
         query,
-        origTweet: text,
-        status: "NO_NIT",
+        origTweet,
+        status: "NO_NIT_FOUND",
       });
     }
 
@@ -68,7 +70,7 @@ export default async (req, res) => {
 
     return res.status(200).json({
       query,
-      origTweet: text,
+      origTweet,
       status: "SUCCESS",
     });
   } catch (e) {

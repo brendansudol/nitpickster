@@ -7,7 +7,6 @@ export const nits = [
   ["brake a leg", "break a leg"],
   ["could care less", "couldn’t care less"],
   ["dually noted", "duly noted"],
-  ["easier then", "easier than"],
   ["hit the breaks", "hit the brakes"],
   ["imminent domain", "eminent domain"],
   ["larger then", "larger than"],
